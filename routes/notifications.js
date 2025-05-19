@@ -1,37 +1,55 @@
 const express = require('express');
 const router = express.Router();
-const db = require('../data/db');
-const { processQueue } = require('../data/utils/queue');
+const Notification = require('../models/Notification');
+const { sendNotification } = require('../data/utils/queue');
 
 // POST /notifications
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
   const { userId, type, message } = req.body;
 
   if (!userId || !type || !message) {
-    return res.status(400).json({ error: 'Missing userId, type or message' });
+    return res.status(400).json({ success: false, error: 'Missing userId, type or message' });
   }
 
-  const notification = {
-    id: Date.now(),
-    type,
-    message,
-    timestamp: new Date()
-  };
+  try {
+    const notification = new Notification({
+      userId,
+      type,
+      message,
+      status: 'sent',
+      timestamp: new Date()
+    });
 
-  if (!db[userId]) db[userId] = [];
-  db[userId].push(notification);
+    await notification.save();
 
-  // Optional: Simulate queue
-  processQueue(notification);
+    try {
+      await sendNotification({ userId, type, message });
+    } catch (queueErr) {
+      console.error('Error queuing notification:', queueErr);
+    }
 
-  res.status(201).json({ message: ' Notification stored', notification });
+    res.status(202).json({
+      success: true,
+      message: 'Notification queued for processing'
+    });
+
+  } catch (error) {
+    console.error('Error saving notification:', error);
+    res.status(500).json({ success: false, error: 'Failed to save notification' });
+  }
 });
 
 // GET /users/:id/notifications
-router.get('/users/:id/notifications', (req, res) => {
+router.get('/users/:id/notifications', async (req, res) => {
   const { id } = req.params;
-  const notifications = db[id] || [];
-  res.json(notifications);
+
+  try {
+    const notifications = await Notification.find({ userId: id }).sort({ timestamp: -1 });
+    res.json({ success: true, data: notifications || [] });
+  } catch (error) {
+    console.error('Error fetching notifications:', error);
+    res.status(500).json({ success: false, error: 'Failed to fetch notifications' });
+  }
 });
 
 module.exports = router;
