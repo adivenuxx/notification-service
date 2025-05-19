@@ -21,16 +21,16 @@ A Node.js-based backend service that allows users to send and retrieve notificat
 
 ## 📁 Folder Structure
 
-notification-service/
-    ├── index.js                  
-    ├── package.json
-    ├── routes/
-    │   └── notifications.js      
-    ├── data/
-    │   ├── db.js                 
-    │   └── utils/
-    │       └── queue.js          
-    └── README.md
+notification-service
+ |-index.js
+ |-package.json
+ |-routes/
+     |-notifications.js
+ |-data/
+     |-db.js
+     |-utils/
+         |-queue.js
+ |-README.md
 
 
 ## ▶️ How to Run Locally
