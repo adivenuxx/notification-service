@@ -23,7 +23,7 @@ A Node.js-based backend service that allows users to send and retrieve notificat
 
 notification-service
  |-index.js
- |-package.json
+ |-package.json 
  |-routes/
      |-notifications.js
  |-data/
