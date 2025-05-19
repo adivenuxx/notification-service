@@ -21,7 +21,7 @@ A Node.js-based backend service that allows users to send and retrieve notificat
 
 ## 📁 Folder Structure
 
-notification-service/
+  notification-service/
   ├── index.js                  
   ├── package.json
   ├── routes/
