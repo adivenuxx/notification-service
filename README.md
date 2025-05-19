@@ -1,24 +1,31 @@
-#  Notification Service – Backend 
+# 📬 Notification Service – Backend 
 
-A Node.js microservice for handling notifications using Apache Kafka for real-time, event-driven delivery. This service allows creating, reading, and managing notifications, leveraging Kafka topics for scalable and reliable message streaming.
+A simple notification microservice using Node.js, Express, MongoDB, and Kafka.
+Ye service user notifications ko receive kar ke MongoDB mein store karti hai aur Kafka queue ke through asynchronous processing karti hai.
 
 
-##  Features
+## 🚀 Features
 
--Send notifications using Kafka as the message broker.
--Receive notifications in real time via Kafka consumer.
--Mark notifications as read/unread.
--Retrieve and count notifications for a specific recipient.
--Microservice architecture for scalability and maintainability.
-
+-Send notifications via REST API (POST /notifications)
+-Fetch user notifications (GET /users/:id/notifications)
+-Kafka-based message queue for scalable processing
+-MongoDB storage for persistent notification data
 
 ## 🧱 Tech Stack
 
 - Node.js
--Apache Kafka
--Express.js
--Prisma (for database)
--dotenv
+- Express.js
+- Body-Parser
+- CORS
+
+## Prerequisites
+
+-Node.js (v14+ recommended)
+-MongoDB (local or cloud)
+-Kafka broker running on localhost:9092
+-Zookeeper running (if Kafka requires)
+-Postman or any API client for testing
+
 
 ## 📁 Folder Structure
 
@@ -31,25 +38,39 @@ notification-service
      |-db.js
      |-utils/
          |-queue.js
- |-consumer
-      |-notificationconsumer.js
- |-models
-       |-notification.js
  |-README.md
- 
 
 
-## ▶️ How to Run Locally
+## Installation & Setup
+Clone Repo:
+git clone <repo-url>
+cd <repo-folder>
 
-```bash
+Install dependencies:
 npm install
-npm start
-```
 
-Server starts on:
+Setup environment variables
+Create a .env file in the root with:
+PORT=3000
+MONGO_URI=mongodb://127.0.0.1:27017/notifications
+KAFKA_BROKER=localhost:9092
 
-http://localhost:5000
+Start MongoDB server locally:
+ -Windows: Start MongoDB service from Services or run MongoDB shell
+ -Linux/macOS: Run mongod
 
+Start Kafka and Zookeeper (if using local Kafka):
+ # In separate terminals
+ bin/zookeeper-server-start.sh config/zookeeper.properties
+ bin/kafka-server-start.sh config/server.properties
+
+## Running the service
+
+Start your Express server:
+ -node index.js
+ 
+Start the Kafka consumer in another terminal:
+ -node notificationConsumer.js
 
 
 
@@ -71,17 +92,9 @@ Send a new notification.
 **Response:**
 ```json
 {
-  "message": "Notification stored",
-  "notification": {
-    "id": 1716051234567,
-    "type": "in-app",
-    "message": "Tomorrow is expected to rain",
-    "timestamp": "2025-05-19T..."
-  }
+  "success": true,
+  "message": "Notification queued for processing"
 }
-
-
-
 
 ### ➤ GET `/users/:id/notifications`
 
@@ -94,14 +107,20 @@ GET http://localhost:5000/users/aditya/notifications
 
 **Response:**
 ```json
-[
-  {
-    "id": 1716051234567,
-    "type": "in-app",
-    "message": "Tomorrow is expected to rain",
-    "timestamp": "2025-05-19T..."
-  }
-]
+{
+  "success": true,
+  "data": [
+    {
+      "_id": "abc123",
+      "userId": "user123",
+      "type": "weather",
+      "message": "Rain expected tomorrow!",
+      "status": "sent",
+      "timestamp": "2025-05-19T10:00:00Z"
+    }
+  ]
+}
+
 ```
 
 ---
@@ -115,8 +134,10 @@ GET http://localhost:5000/users/aditya/notifications
 
 ## 📌 Notes
 
-- Data will be lost after server restarts since it's stored in memory (`db.js`).
-- Queue system is simulated using `setTimeout()` inside `queue.js`.
+-Make sure MongoDB and Kafka are running before starting the service.
+-If you face connection errors, check ports and firewall settings.
+-Kafka consumer logs messages when a notification is consumed.
+-You can extend this service with notification status updates, deletes, or real-time push notifications via WebSockets.
 
 ---
 
