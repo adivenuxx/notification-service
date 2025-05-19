@@ -1,23 +1,24 @@
-# 📬 Notification Service – Backend 
+#  Notification Service – Backend 
 
-A Node.js-based backend service that allows users to send and retrieve notifications using REST APIs.
+A Node.js microservice for handling notifications using Apache Kafka for real-time, event-driven delivery. This service allows creating, reading, and managing notifications, leveraging Kafka topics for scalable and reliable message streaming.
 
 
-## 🚀 Features
+##  Features
 
-- ✅ POST `/notifications`: Send a notification (type: `in-app`, `email`, `sms`)
-- ✅ GET `/users/:id/notifications`: Retrieve all notifications for a user
-- ✅ Dummy queue simulation with retry
-- ✅ In-memory data store (no database)
-- ✅ Modular code structure (routes, utils, db)
+-Send notifications using Kafka as the message broker.
+-Receive notifications in real time via Kafka consumer.
+-Mark notifications as read/unread.
+-Retrieve and count notifications for a specific recipient.
+-Microservice architecture for scalability and maintainability.
 
 
 ## 🧱 Tech Stack
 
 - Node.js
-- Express.js
-- Body-Parser
-- CORS
+-Apache Kafka
+-Express.js
+-Prisma (for database)
+-dotenv
 
 ## 📁 Folder Structure
 
@@ -30,7 +31,12 @@ notification-service
      |-db.js
      |-utils/
          |-queue.js
+ |-consumer
+      |-notificationconsumer.js
+ |-models
+       |-notification.js
  |-README.md
+ 
 
 
 ## ▶️ How to Run Locally
@@ -65,7 +71,7 @@ Send a new notification.
 **Response:**
 ```json
 {
-  "message": "✅ Notification stored",
+  "message": "Notification stored",
   "notification": {
     "id": 1716051234567,
     "type": "in-app",
