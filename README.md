@@ -1,17 +1,17 @@
-# 📬 Notification Service – Backend 
+#  Notification Service – Backend 
 
 A simple notification microservice using Node.js, Express, MongoDB, and Kafka.
 Ye service user notifications ko receive kar ke MongoDB mein store karti hai aur Kafka queue ke through asynchronous processing karti hai.
 
 
-## 🚀 Features
+## Features
 
 -Send notifications via REST API (POST /notifications)
 -Fetch user notifications (GET /users/:id/notifications)
 -Kafka-based message queue for scalable processing
 -MongoDB storage for persistent notification data
 
-## 🧱 Tech Stack
+##  Tech Stack
 
 - Node.js
 - Express.js
@@ -38,7 +38,11 @@ notification-service
      |-db.js
      |-utils/
          |-queue.js
- |-README.md
+ |-consumer
+     |-notificationconsumer.js
+ |-models
+     |- notification.js
+ |- README.md
 
 
 ## Installation & Setup
@@ -61,8 +65,9 @@ Start MongoDB server locally:
 
 Start Kafka and Zookeeper (if using local Kafka):
  # In separate terminals
- bin/zookeeper-server-start.sh config/zookeeper.properties
- bin/kafka-server-start.sh config/server.properties
+ -bin/zookeeper-server-start.sh config/zookeeper.properties
+ 
+ -bin/kafka-server-start.sh config/server.properties
 
 ## Running the service
 
